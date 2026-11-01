@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Vision Detection Platform</title>
+
+    <!-- TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+
+    <!-- COCO-SSD -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+        <div class="logo-icon">AI</div>
+
+        <div>
+            <h2>VisionAI</h2>
+            <span>Detection Platform</span>
+        </div>
+    </div>
+
+    <nav>
+
+        <button class="nav-item active" onclick="showPage('dashboard')">
+            <span>📊</span>
+            Dashboard
+        </button>
+
+        <button class="nav-item" onclick="showPage('camera')">
+            <span>📷</span>
+            Live Camera
+        </button>
+
+        <button class="nav-item" onclick="showPage('upload')">
+            <span>📁</span>
+            Upload Media
+        </button>
+
+        <button class="nav-item" onclick="showPage('history')">
+            <span>🕘</span>
+            Detection History
+        </button>
+
+        <button class="nav-item" onclick="showPage('reports')">
+            <span>📄</span>
+            Reports
+        </button>
+
+        <button class="nav-item" onclick="showPage('settings')">
+            <span>⚙️</span>
+            Settings
+        </button>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+
+        <div class="system-status">
+            <span class="status-dot"></span>
+
+            <div>
+                <strong>AI System</strong>
+                <small id="systemStatus">
+                    Loading...
+                </small>
+            </div>
+        </div>
+
+    </div>
+
+</aside>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="main">
+
+    <!-- HEADER -->
+
+    <header class="topbar">
+
+        <div>
+
+            <h1 id="pageTitle">
+                AI Detection Dashboard
+            </h1>
+
+            <p id="pageSubtitle">
+                Intelligent object detection and monitoring
+            </p>
+
+        </div>
+
+        <div class="header-right">
+
+            <div class="model-status">
+
+                <span class="green-dot"></span>
+
+                <span id="modelStatus">
+                    Loading AI Model...
+                </span>
+
+            </div>
+
+            <div class="profile">
+
+                <div class="avatar">
+                    U
+                </div>
+
+                <div>
+                    <strong>User</strong>
+                    <small>Administrator</small>
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- ================= DASHBOARD ================= -->
+
+    <section id="dashboardPage" class="page active-page">
+
+        <div class="welcome">
+
+            <div>
+
+                <h2>Welcome to VisionAI 👋</h2>
+
+                <p>
+                    Detect and analyze objects from camera,
+                    images and videos using AI.
+                </p>
+
+            </div>
+
+            <button
+                class="primary-btn"
+                onclick="showPage('camera')">
+
+                📷 Start Detection
+
+            </button>
+
+        </div>
+
+
+        <!-- STATISTICS -->
+
+        <div class="stats-grid">
+
+            <div class="stat-card">
+
+                <div class="stat-icon blue">
+                    🎯
+                </div>
+
+                <div>
+
+                    <span>Total Detections</span>
+
+                    <strong id="totalDetections">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon green">
+                    📦
+                </div>
+
+                <div>
+
+                    <span>Objects Found</span>
+
+                    <strong id="objectsFound">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon purple">
+                    🧠
+                </div>
+
+                <div>
+
+                    <span>Unique Objects</span>
+
+                    <strong id="uniqueObjects">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon orange">
+                    📸
+                </div>
+
+                <div>
+
+                    <span>Media Analyzed</span>
+
+                    <strong id="mediaAnalyzed">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- DASHBOARD CONTENT -->
+
+        <div class="dashboard-grid">
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <h3>Detection Overview</h3>
+
+                    <button
+                        class="small-btn"
+                        onclick="showPage('camera')">
+
+                        New Detection
+
+                    </button>
+
+                </div>
+
+                <div class="chart-area">
+
+                    <div class="fake-chart">
+
+                        <div style="height:35%"></div>
+                        <div style="height:60%"></div>
+                        <div style="height:45%"></div>
+                        <div style="height:75%"></div>
+                        <div style="height:55%"></div>
+                        <div style="height:85%"></div>
+                        <div style="height:65%"></div>
+
+                    </div>
+
+                    <div class="chart-labels">
+
+                        <span>Mon</span>
+                        <span>Tue</span>
+                        <span>Wed</span>
+                        <span>Thu</span>
+                        <span>Fri</span>
+                        <span>Sat</span>
+                        <span>Sun</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <h3>Recent Objects</h3>
+
+                </div>
+
+                <div id="recentObjects">
+
+                    <div class="empty-state">
+                        No detections yet.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= CAMERA PAGE ================= -->
+
+    <section id="cameraPage" class="page">
+
+        <div class="page-card">
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2>Live AI Camera</h2>
+
+                    <p>
+                        Real-time object detection
+                    </p>
+
+                </div>
+
+                <div class="camera-controls">
+
+                    <button
+                        class="primary-btn"
+                        onclick="startCamera()">
+
+                        ▶ Start Camera
+
+                    </button>
+
+                    <button
+                        class="danger-btn"
+                        onclick="stopCamera()">
+
+                        ■ Stop
+
+                    </button>
+
+                    <button
+                        class="secondary-btn"
+                        onclick="captureScreenshot()">
+
+                        📸 Screenshot
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="detector-layout">
+
+                <div class="video-panel">
+
+                    <div class="media-container">
+
+                        <video
+                            id="video"
+                            autoplay
+                            playsinline>
+                        </video>
+
+                        <canvas id="canvas"></canvas>
+
+                        <div
+                            id="cameraPlaceholder"
+                            class="media-placeholder">
+
+                            <div>📷</div>
+
+                            <h3>Camera is not running</h3>
+
+                            <p>
+                                Click Start Camera to begin AI detection.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="detection-status">
+
+                        <span class="status-dot"></span>
+
+                        <span id="detectionStatus">
+                            Ready
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="results-panel">
+
+                    <h3>Live Results</h3>
+
+                    <div class="result-stats">
+
+                        <div>
+                            <span>Objects</span>
+                            <strong id="cameraObjectCount">
+                                0
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Unique</span>
+                            <strong id="cameraUniqueCount">
+                                0
+                            </strong>
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="cameraResults"
+                        class="object-results">
+
+                        <div class="empty-state">
+                            No objects detected.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= UPLOAD PAGE ================= -->
+
+    <section id="uploadPage" class="page">
+
+        <div class="page-card">
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2>Upload Media</h2>
+
+                    <p>
+                        Analyze images and videos using AI
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="upload-area">
+
+                <div class="upload-box">
+
+                    <div class="upload-icon">
+                        🖼️
+                    </div>
+
+                    <h3>Upload Image</h3>
+
+                    <p>
+                        JPG, PNG, WEBP
+                    </p>
+
+                    <label class="upload-btn">
+
+                        Choose Image
+
+                        <input
+                            type="file"
+                            id="imageInput"
+                            accept="image/*"
+                            hidden>
+
+                    </label>
+
+                </div>
+
+
+                <div class="upload-box">
+
+                    <div class="upload-icon">
+                        🎥
+                    </div>
+
+                    <h3>Upload Video</h3>
+
+                    <p>
+                        MP4, WEBM, MOV
+                    </p>
+
+                    <label class="upload-btn">
+
+                        Choose Video
+
+                        <input
+                            type="file"
+                            id="videoInput"
+                            accept="video/*"
+                            hidden>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <div class="upload-preview">
+
+                <div class="media-container">
+
+                    <img
+                        id="uploadedImage"
+                        alt="Uploaded image">
+
+                    <video
+                        id="uploadedVideo"
+                        controls>
+                    </video>
+
+                    <canvas id="uploadCanvas"></canvas>
+
+                    <div
+                        id="uploadPlaceholder"
+                        class="media-placeholder">
+
+                        <div>📁</div>
+
+                        <h3>No media selected</h3>
+
+                    </div>
+
+                </div>
+
+                <div
+                    id="uploadResults"
+                    class="upload-results">
+
+                    Select an image or video to analyze.
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= HISTORY ================= -->
+
+    <section id="historyPage" class="page">
+
+        <div class="page-card">
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2>Detection History</h2>
+
+                    <p>
+                        Previous AI detection results
+                    </p>
+
+                </div>
+
+                <button
+                    class="danger-btn"
+                    onclick="clearHistory()">
+
+                    Clear History
+
+                </button>
+
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Date</th>
+                            <th>Source</th>
+                            <th>Objects</th>
+                            <th>Unique</th>
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="historyTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= REPORTS ================= -->
+
+    <section id="reportsPage" class="page">
+
+        <div class="page-card">
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2>Detection Reports</h2>
+
+                    <p>
+                        Generate a simple detection report
+                    </p>
+
+                </div>
+
+                <button
+                    class="primary-btn"
+                    onclick="downloadReport()">
+
+                    ⬇ Download Report
+
+                </button>
+
+            </div>
+
+            <div id="reportContent" class="report">
+
+                <h3>AI Detection Report</h3>
+
+                <p>
+                    Total detections:
+                    <strong id="reportTotal">0</strong>
+                </p>
+
+                <p>
+                    Objects found:
+                    <strong id="reportObjects">0</strong>
+                </p>
+
+                <p>
+                    Unique object types:
+                    <strong id="reportUnique">0</strong>
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= SETTINGS ================= -->
+
+    <section id="settingsPage" class="page">
+
+        <div class="page-card">
+
+            <h2>Settings</h2>
+
+            <div class="setting">
+
+                <div>
+
+                    <strong>Minimum Confidence</strong>
+
+                    <p>
+                        Ignore detections below this confidence.
+                    </p>
+
+                </div>
+
+                <input
+                    type="range"
+                    id="confidenceRange"
+                    min="10"
+                    max="95"
+                    value="50">
+
+                <span id="confidenceValue">
+                    50%
+                </span>
+
+            </div>
+
+
+            <div class="setting">
+
+                <div>
+
+                    <strong>Detection Sound</strong>
+
+                    <p>
+                        Enable detection notifications.
+                    </p>
+
+                </div>
+
+                <input
+                    type="checkbox"
+                    id="soundToggle"
+                    checked>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script src="app.js"></script>
+
+</body>
+</html>
